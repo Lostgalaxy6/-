@@ -1,6 +1,6 @@
 /**
  * ============================================================
- *  PORTFOLIO CONFIG — edit this file only, never touch index.html
+ *  Ts makes my life easier
  * ============================================================
  */
 
