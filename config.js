@@ -8,12 +8,12 @@ const CONFIG = {
 
   /* ── Identity ──────────────────────────────────────────── */
   name:   "lostgalax_y",
-  title:  "MC Dev & Server Admin",
-  status: "open to commissions",
+  title:  "MC Dev & Server Configurator",
+  status: "Open To Commissions",
   statusVisible: true,
 
   /* "currently working on" ticker in sidebar */
-  currentlyWorkingOn: "PvPBot improvements",  // set to "" to hide
+  currentlyWorkingOn: "PvPBot v3.5.0",  // set to "" to hide
 
   /* Hero section */
   heroLines: [
@@ -21,7 +21,7 @@ const CONFIG = {
     "5 years deep in server architecture.",
     "I build things that actually work."
   ],
-  heroBio: "From custom Fabric mods to fine-tuned Spigot plugins — I work across the full Minecraft stack. If it runs on a server, I've probably broken and fixed it.",
+  heroBio: "From custom Fabric mods to fine-tuned Spigot plugins I work across the full Minecraft stack. If it runs on a server, I've probably broken and fixed it.",
 
   /* ── Music Player ──────────────────────────────────────── */
   music: {
@@ -48,7 +48,7 @@ const CONFIG = {
       version:   "1.21.1",
       loader:    "Fabric",
       lang:      "Java",
-      desc:      "Adds smart combat bots via Carpet PvP's API. Bots can breach swap, place cobwebs at your feet, and on UltraHard mode fire an Orbital Strike Cannon at you. Pure Java, no compromises.",
+      desc:      "Adds smart combat bots via Carpet PvP's API. Bots can breach swap, place cobwebs at your feet, and on UltraHard mode fire an Orbital Strike Cannon at you. Coded In Pure Java.",
       tags:      ["Java", "Fabric API", "Carpet PvP", "1.21.1"],
       link:      "https://www.youtube.com/watch?v=oHg5SJYRHA0",          // GitHub / Modrinth / CurseForge — opens when clicking the project name
       image: {
@@ -64,7 +64,7 @@ const CONFIG = {
       version:   "1.21.1",
       loader:    "Fabric",
       lang:      "Java",
-      desc:      "Addon for PvPBot. Give bots orbital strike charges, set difficulty to UltraHard, web yourself and watch the shot land. Use a charge yourself to reset the cooldown if it bugs out. Pure Java.",
+      desc:      "Addon for PvPBot Give bots orbital strike charges, set difficulty to UltraHard, web yourself and watch the shot land. Use a charge yourself to reset the cooldown if it bugs out. Pure Java.",
       tags:      ["Java", "Fabric API", "PvPBot Addon", "1.21.1"],
       link:      "https://www.curseforge.com/minecraft/mc-mods/vulgars-orbital-strike-mod",
       image: {
@@ -80,7 +80,7 @@ const CONFIG = {
       version:   "1.21.1",
       loader:    "Spigot / Paper",
       lang:      "Java",
-      desc:      "Full control over mace enchant damage values — nerf, buff, or single out a specific mace to wreck your friends. Per-enchant multipliers with live reload. Breach swap damage intentionally untouched.",
+      desc:      "Full control over mace enchant damage values. nerf, buff, or single out a specific mace to Wreck your friends. Per-enchant multipliers with live reload, Ground Breach swap damage intentionally untouched & not configurable",
       tags:      ["Java", "Spigot", "Paper", "1.21.1"],
       link:      "https://www.curseforge.com/minecraft/bukkit-plugins/macecontrol",
       image: {
