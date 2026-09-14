@@ -33,8 +33,8 @@ const CONFIG = {
   /* ── Music Player ──────────────────────────────────────── */
   music: {
     enabled:  true,
-    src:      "./assets/creator.mp3",   // path to your mp3
-    label:    "creator.mp3"             // shown in the player tooltip
+    src:      "./assets/Creator.mp3",   // path to your mp3
+    label:    "Creator.mp3"             // shown in the player tooltip
   },
 
   /* ── Avatar / Profile Image ────────────────────────────── */
