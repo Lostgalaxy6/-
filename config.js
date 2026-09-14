@@ -76,8 +76,8 @@ const CONFIG = {
       link:    "",
       image: {
         src:     "./assets/macecontrol.png",
-        width:   "100%",
-        height:  "130px",
+        width:   "90%",
+        height:  "100px",
         fit:     "cover"
       }
     }
