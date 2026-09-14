@@ -15,6 +15,13 @@ const CONFIG = {
   /* "currently working on" ticker in sidebar */
   currentlyWorkingOn: "PvPBot v3.5.0",  // set to "" to hide
 
+  /* Startup console logs */
+  startupLogs: [
+    "[00:00:01] INFO Cooking...",
+    "[00:00:02] INFO Adding Spices... OK",
+    "[00:00:03] INFO Served. 🍲"
+  ],
+
   /* Hero section */
   heroLines: [
     "Minecraft plugin & mod developer.",
