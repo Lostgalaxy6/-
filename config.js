@@ -18,7 +18,7 @@ const CONFIG = {
   /* Startup console logs */
   startupLogs: [
     "[00:00:01] INFO Cooking...",
-    "[00:00:02] INFO Adding Spices... OK",
+    "[00:00:02] INFO Adding Spices...",
     "[00:00:03] INFO Served. 🍲"
   ],
 
