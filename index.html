@@ -998,240 +998,144 @@ if (C.statusVisible !== false) {
 }
 
 if (C.currentlyWorkingOn) {
-  const txt = `<span class="t-green">&gt;</span> working on: ${C.currentlyWorkingOn} &nbsp;&nbsp;&nbsp; <span class="t-green">&gt;</span> working on: ${C.currentlyWorkingOn} &nbsp;&nbsp;&nbsp;`;
   const ticker = el('div', 'ticker-wrap');
-  ticker.innerHTML = `<span class="ticker-inner">${txt}</span>`;
+  const inner = el('div', 'ticker-inner');
+  let txt = C.currentlyWorkingOn + ' &bull; '.repeat(30);
+  inner.innerHTML = txt.split('').map((c, i) => i % 4 === 0 ? `<span class="t-green">${c}</span>` : c).join('');
+  ticker.appendChild(inner);
   sidebar.appendChild(ticker);
 }
 
 const nav = el('nav');
-[['#hero','home'],['#about','about'],['#skills','skills'],['#projects','projects'],['#contact','contact']].forEach(([href, label]) => {
-  const a = document.createElement('a');
-  a.href = href;
-  a.innerHTML = `<span class="ni">⬡</span>${label}`;
+const navLinks = [
+  { label: 'home',     href: '#hero' },
+  { label: 'about',    href: '#about' },
+  { label: 'projects', href: '#projects' },
+  { label: 'skills',   href: '#skills' },
+  { label: 'contact',  href: '#contact' }
+];
+navLinks.forEach(link => {
+  const a = el('a');
+  a.href = link.href;
+  a.innerHTML = `<span class="ni">→</span>${link.label}`;
+  a.addEventListener('click', () => {
+    document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
+    a.classList.add('active');
+  });
   nav.appendChild(a);
 });
 sidebar.appendChild(nav);
 
 const footer = el('div', 'sidebar-footer');
-if (C.contact && C.contact.discord) {
-  const a = document.createElement('a');
-  a.href = C.contact.discordUrl || '#';
+const social = [
+  { label: 'GitHub', href: 'https://github.com/lostgalaxy6' },
+  { label: 'Discord', href: 'https://discord.com/users/lostgalax_y' }
+];
+social.forEach(link => {
+  const a = el('a');
+  a.href = link.href;
   a.target = '_blank';
-  a.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.032.054a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>${C.contact.discord}`;
+  a.textContent = link.label;
   footer.appendChild(a);
-}
+});
 sidebar.appendChild(footer);
 
-/* ── MAIN BUILD ── */
+/* ── MAIN CONTENT BUILD ── */
 const main = document.getElementById('main');
 
 /* HERO */
 const hero = el('section');
 hero.id = 'hero';
 
-const linesHTML = (C.heroLines || []).map((line, i) =>
-  `<span class="typing-line" data-line="${i}">${line}</span>`
-).join('');
+// Render startup logs from config
+const heroConsole = el('div', 'hero-console');
+if (C.startupLogs && C.startupLogs.length > 0) {
+  const logsHtml = C.startupLogs.map(log => {
+    return log.replace(/INFO/g, '<span class="c-green">INFO</span>');
+  }).join('<br>');
+  heroConsole.innerHTML = logsHtml;
+}
+hero.appendChild(heroConsole);
 
-hero.innerHTML = `
-  <div class="hero-console">
-    <span class="c-dim">[00:00:01]</span> <span class="c-green">INFO</span>  Server starting...<br>
-    <span class="c-dim">[00:00:02]</span> <span class="c-green">INFO</span>  Loading plugins... <span class="c-green">OK</span><br>
-    <span class="c-dim">[00:00:03]</span> <span class="c-green">INFO</span>  Developer online. <span class="c-green">✓</span>
-  </div>
-  <h1 class="hero-title" id="hero-title">${linesHTML}</h1>
-  <p class="hero-sub" id="hero-sub">${C.heroBio || ''}</p>
-  <div class="hero-cta" id="hero-cta">
-    <a class="btn btn-primary" href="#projects">View my work</a>
-    <a class="btn btn-secondary" href="#contact">Get in touch</a>
-  </div>
-`;
-main.appendChild(hero);
-
-/* typing animation */
-(function typeHero() {
-  const lines = document.querySelectorAll('.typing-line');
-  let i = 0;
-
-  function typeLine(lineEl, text, cb) {
-    lineEl.classList.add('visible');
-    lineEl.textContent = '';
-    let j = 0;
-    const iv = setInterval(() => {
-      lineEl.textContent += text[j++];
-      if (j >= text.length) { clearInterval(iv); cb && setTimeout(cb, 180); }
-    }, 38);
-  }
-
-  function next() {
-    if (i >= lines.length) {
-      document.getElementById('hero-sub').classList.add('visible');
-      setTimeout(() => document.getElementById('hero-cta').classList.add('visible'), 300);
-      return;
-    }
-    typeLine(lines[i], C.heroLines[i], next);
-    i++;
-  }
-
-  setTimeout(next, 600);
-})();
-
-/* ABOUT */
-const about = el('section');
-about.id = 'about';
-const aboutParas = (C.aboutParagraphs || []).map(p => `<p>${p}</p>`).join('');
-const statsHTML  = (C.stats || []).map(s =>
-  `<div class="exp-card"><div class="exp-num">${s.num}</div><div class="exp-label">${s.label}</div></div>`
-).join('');
-about.innerHTML = `
-  <div class="section-label">about.yml</div>
-  <div class="about-text">${aboutParas}</div>
-  <div class="exp-grid">${statsHTML}</div>
-`;
-main.appendChild(about);
-
-/* SKILLS */
-const skills = el('section');
-skills.id = 'skills';
-skills.innerHTML = `<div class="section-label">config.yml</div>`;
-
-(C.skillGroups || []).forEach(group => {
-  const linesHTML = group.lines.map(line => {
-    const vc  = line.type === 'str' ? 'cfg-str' : 'cfg-val';
-    const val = line.type === 'bool'
-      ? (line.val === true ? 'true' : line.val === false ? 'false' : line.val)
-      : `"${line.val}"`;
-    return `<span class="cfg-key">${line.key}</span>: <span class="${vc}">${val}</span><br>`;
-  }).join('');
-
-  const g = el('div', 'skill-group');
-  g.innerHTML = `
-    <div class="skill-group-title"># ${group.label}</div>
-    <div class="plugin-config">
-      <div class="plugin-header"><span class="pf">${group.file}</span><span>${group.sub}</span></div>
-      <div class="plugin-body">${linesHTML}</div>
-    </div>
-  `;
-  skills.appendChild(g);
-});
-main.appendChild(skills);
-
-/* PROJECTS */
-const projects = el('section');
-projects.id = 'projects';
-projects.innerHTML = `<div class="section-label">plugins/</div>`;
-
-const grid = el('div', 'projects-grid');
-
-(C.projects || []).forEach(proj => {
-  const card = el('div', 'project-card');
-
-  /* top bar with version badge */
-  const topBar = el('div', 'card-top-bar');
-  topBar.innerHTML = `
-    <span class="ctb-dot"></span>
-    ${proj.type.toLowerCase()} &bull; ${proj.loader}
-    <span class="version-badge">${proj.version}</span>
-  `;
-  card.appendChild(topBar);
-
-  /* image with lightbox */
-  const imgWrap = el('div', 'card-image');
-  if (proj.image && proj.image.src) {
-    const img = document.createElement('img');
-    img.src = proj.image.src;
-    img.alt = proj.name;
-    img.style.height     = proj.image.height || '180px';
-    img.style.objectFit  = proj.image.fit    || 'cover';
-    imgWrap.style.height = proj.image.height || '180px';
-
-    const hint = el('div', 'zoom-hint', 'click to expand');
-    imgWrap.appendChild(img);
-    imgWrap.appendChild(hint);
-
-    imgWrap.addEventListener('click', () => openLightbox(proj.image.src, proj.name));
-  } else {
-    imgWrap.style.height = '90px';
-    imgWrap.innerHTML = `<div class="img-placeholder">add image path in config.js</div>`;
-  }
-  card.appendChild(imgWrap);
-
-  /* body */
-  const body = el('div', 'card-body');
-  const tagsHTML = (proj.tags || []).map(t => `<span class="tag">${t}</span>`).join('');
-
-  /* project name — clickable if link is set */
-  const nameEl = proj.link
-    ? `<a class="project-name" href="${proj.link}" target="_blank">${proj.name} <span class="ext-icon">↗</span></a>`
-    : `<span class="project-name" style="cursor:default">${proj.name}</span>`;
-
-  body.innerHTML = `
-    <div class="project-type">${proj.type} / ${proj.loader}</div>
-    ${nameEl}
-    <div class="project-desc">${proj.desc}</div>
-    <div class="project-footer">
-      <div class="project-tags">${tagsHTML}</div>
-    </div>
-  `;
-  card.appendChild(body);
-  grid.appendChild(card);
-});
-
-projects.appendChild(grid);
-main.appendChild(projects);
-
-/* CONTACT */
-const contact = el('section');
-contact.id = 'contact';
-const dc = C.contact || {};
-contact.innerHTML = `
-  <div class="section-label">contact.sh</div>
-  <div class="contact-inner">
-    <div class="contact-console">
-      <span class="c-prompt">$</span> whoami<br>
-      <span style="color:var(--text)">${C.name}</span><br>
-      <span class="c-prompt">$</span> status --check<br>
-      <span style="color:var(--green)">${C.status}</span>
-    </div>
-    <h2>${dc.headline || "Let's build something."}</h2>
-    <p>${dc.body || ''}</p>
-    <a class="contact-link" id="discord-link" href="${dc.discordUrl || '#'}" target="_blank">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.032.054a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-      <span id="discord-text">${dc.discord || ''}</span>
-      <span class="copy-flash" id="copy-flash">copied!</span>
-    </a>
-  </div>
-`;
-main.appendChild(contact);
-
-/* copy discord on click */
-const discordLink = document.getElementById('discord-link');
-const copyFlash   = document.getElementById('copy-flash');
-if (discordLink && dc.discord) {
-  discordLink.addEventListener('click', e => {
-    e.preventDefault();
-    navigator.clipboard.writeText(dc.discord).then(() => {
-      copyFlash.classList.add('show');
-      toast('Discord tag copied!');
-      setTimeout(() => copyFlash.classList.remove('show'), 1500);
-    });
+const heroTitle = el('div', 'hero-title');
+if (C.heroLines) {
+  C.heroLines.forEach((line, i) => {
+    const span = el('span', 'typing-line', line);
+    if (i === 0) span.classList.add('visible');
+    heroTitle.appendChild(span);
   });
 }
+hero.appendChild(heroTitle);
 
-/* ── active nav on scroll ── */
-const allSections = document.querySelectorAll('section[id]');
-const navLinks    = document.querySelectorAll('nav a');
+const heroSub = el('p', 'hero-sub', C.heroBio || '');
+hero.appendChild(heroSub);
 
-const io = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      navLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + entry.target.id));
-    }
+const heroCta = el('div', 'hero-cta');
+heroCta.innerHTML = `<a href="#contact" class="btn btn-primary">Get In Touch</a><a href="#projects" class="btn btn-secondary">See My Work</a>`;
+hero.appendChild(heroCta);
+
+main.appendChild(hero);
+
+setTimeout(() => {
+  if (C.heroLines && C.heroLines.length > 1) {
+    const lines = document.querySelectorAll('#hero .typing-line');
+    let idx = 1;
+    const typeNext = () => {
+      if (idx < lines.length) {
+        lines[idx].classList.add('visible');
+        idx++;
+        setTimeout(typeNext, 600);
+      }
+    };
+    typeNext();
+  }
+  document.querySelector('#hero .hero-sub').classList.add('visible');
+  document.querySelector('#hero .hero-cta').classList.add('visible');
+}, 300);
+
+// About section
+const about = el('section');
+about.id = 'about';
+about.innerHTML = `<div class="section-label">// about</div><div class="about-text">${C.aboutParagraphs.map(p => `<p>${p}</p>`).join('')}</div><div class="exp-grid">${C.stats.map(s => `<div class="exp-card"><div class="exp-num">${s.num}</div><div class="exp-label">${s.label}</div></div>`).join('')}</div>`;
+main.appendChild(about);
+
+// Skills section
+const skills = el('section');
+skills.id = 'skills';
+let skillsHtml = '<div class="section-label">// skills & stack</div>';
+C.skillGroups.forEach(group => {
+  skillsHtml += `<div class="skill-group"><div class="skill-group-title">${group.label}</div><div class="plugin-config"><div class="plugin-header"><span class="pf">$ config/${group.file}</span></div><div class="plugin-body">`;
+  group.lines.forEach(line => {
+    const typeClass = line.type === 'bool' ? (line.val ? 'c-green' : 'c-dim') : line.type;
+    const val = line.type === 'bool' ? (line.val ? '✓' : '✗') : line.val;
+    skillsHtml += `<span class="cfg-key">${line.key}:</span> <span class="cfg-${typeClass}">${val}</span><br>`;
   });
-}, { threshold: 0.3 });
+  skillsHtml += `</div></div></div>`;
+});
+skills.innerHTML = skillsHtml;
+main.appendChild(skills);
 
-allSections.forEach(s => io.observe(s));
+// Projects section
+const projects = el('section');
+projects.id = 'projects';
+let projHtml = '<div class="section-label">// projects</div><div class="projects-grid">';
+C.projects.forEach(proj => {
+  projHtml += `<div class="project-card"><div class="card-top-bar"><span class="ctb-dot"></span><span>${proj.loader}</span><span class="version-badge">${proj.version}</span></div>`;
+  if (proj.image) {
+    projHtml += `<div class="card-image" onclick="openLightbox('${proj.image.src}', '${proj.name}')"><img src="${proj.image.src}" alt="${proj.name}" style="width:${proj.image.width};height:${proj.image.height};object-fit:${proj.image.fit}"><div class="zoom-hint">click to zoom</div></div>`;
+  }
+  projHtml += `<div class="card-body"><div class="project-type">${proj.type}</div><a href="${proj.link}" target="_blank" class="project-name">${proj.name}<span class="ext-icon">↗</span></a><p class="project-desc">${proj.desc}</p><div class="project-footer"><div class="project-tags">${proj.tags.map(t => `<div class="tag">${t}</div>`).join('')}</div></div></div></div>`;
+});
+projHtml += '</div>';
+projects.innerHTML = projHtml;
+main.appendChild(projects);
+
+// Contact section
+const contact = el('section');
+contact.id = 'contact';
+contact.innerHTML = `<div class="contact-inner"><div class="contact-console"><span class="c-prompt">$</span> <span class="c-dim">contact_me --platform discord</span></div><h2>${C.contact.headline}</h2><p>${C.contact.body}</p><a href="https://discord.com/users/${C.contact.discord}" target="_blank" class="contact-link">Discord: ${C.contact.discord}<span class="copy-flash">copied!</span></a></div>`;
+main.appendChild(contact);
+
 </script>
 </body>
 </html>
