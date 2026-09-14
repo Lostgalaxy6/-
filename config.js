@@ -1,6 +1,6 @@
 /**
  * ============================================================
- *  PORTFOLIO CONFIG — edit this file only, never touch index.html
+ *  It makes ma life easier
  * ============================================================
  */
 
@@ -9,16 +9,16 @@ const CONFIG = {
   /* ── Identity ──────────────────────────────────────────── */
   name: "lostgalax_y",           // displayed in sidebar + hero
   title: "MC Dev & Server Admin", // shown under your name in sidebar
-  status: "open to commissions",  // the green dot label
+  status: "Open To Commissions",  // the green dot label
   statusVisible: true,            // set false to hide the dot
 
   /* Hero section */
   heroLines: [
     "Minecraft plugin & mod developer.",
-    "5 years deep in server architecture.",
-    "I build things that actually work."
+    "5 years deep in server development & configuration",
+    "I build things that actually work. (i suck at 3D modeling)"
   ],
-  heroBio: "From custom Fabric mods to fine-tuned Spigot plugins — I work across the full Minecraft stack. If it runs on a server, I've probably broken and fixed it.",
+  heroBio: "From custom Fabric mods to fine-tuned Spigot plugins, I work across the full Minecraft stack (64). If it runs on a server, I've probably broken and fixed it.",
 
   /* ── Avatar / Profile Image ────────────────────────────── */
   avatar: {
@@ -77,7 +77,7 @@ const CONFIG = {
       image: {
         src:     "./assets/macecontrol.png",
         width:   "100%",
-        height:  "180px",
+        height:  "130px",
         fit:     "cover"
       }
     }
