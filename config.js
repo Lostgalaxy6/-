@@ -84,7 +84,7 @@ const CONFIG = {
     {
       name:      "MaceControl",
       type:      "Spigot Plugin",
-      version:   "1.21.1",
+      version:   "1.21.11",
       loader:    "Spigot / Paper",
       lang:      "Java",
       desc:      "Full control over mace enchant damage values. nerf, buff, or single out a specific mace to Wreck your friends. Per-enchant multipliers with live reload, Ground Breach swap damage intentionally untouched & not configurable",
